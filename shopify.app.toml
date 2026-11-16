@@ -1,0 +1,32 @@
+client_id = ""
+name = "Alt Text Bulk Filler"
+application_url = "https://your-production-domain.vercel.app"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2026-10"
+
+[[webhooks.subscriptions]]
+topics = ["app/uninstalled"]
+uri = "/webhooks/app/uninstalled"
+
+[[webhooks.subscriptions]]
+compliance_topics = ["customers/data_request"]
+uri = "/webhooks/customers/data_request"
+
+[[webhooks.subscriptions]]
+compliance_topics = ["customers/redact"]
+uri = "/webhooks/customers/redact"
+
+[[webhooks.subscriptions]]
+compliance_topics = ["shop/redact"]
+uri = "/webhooks/shop/redact"
+
+[access_scopes]
+scopes = "read_products,write_files"
+
+[auth]
+redirect_urls = ["https://your-production-domain.vercel.app/auth/callback"]
