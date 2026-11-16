@@ -49,7 +49,7 @@ Requested access scopes are `read_products` and `write_files`. A merchant accoun
 
 1. Push this project to a GitHub repository.
 2. Import the repository in Vercel. Use `main` for production deployments and enable preview deployments for pull requests/branches.
-3. Configure the Vercel build command as `npm run vercel-build` (also set in `vercel.json`). It generates Prisma Client, runs `prisma migrate deploy`, then builds React Router. `DIRECT_URL` must be available to the build.
+3. Configure the Vercel build command as `npm run vercel-build` (also set in `vercel.json`). It generates Prisma Client, runs `prisma migrate deploy`, then builds React Router. It recognizes explicit `DATABASE_URL`/`DIRECT_URL`, the Storage integration variables `STORAGE_PRISMA_DATABASE_URL` (pooled) and `STORAGE_DATABASE_URL` (direct), Neon `DATABASE_URL_UNPOOLED`, and Vercel Postgres `POSTGRES_PRISMA_URL`/`POSTGRES_URL` plus `POSTGRES_URL_NON_POOLING`.
 4. Add these environment variables in Vercel project settings:
 
    | Variable | Purpose |
@@ -58,8 +58,8 @@ Requested access scopes are `read_products` and `write_files`. A merchant accoun
    | `SHOPIFY_API_SECRET` | Shopify app secret; mark sensitive |
    | `SCOPES` | `read_products,write_files` |
    | `SHOPIFY_APP_URL` | Stable production HTTPS URL |
-   | `DATABASE_URL` | Pooled Postgres connection string; mark sensitive |
-   | `DIRECT_URL` | Direct/unpooled Postgres connection string for migrations; mark sensitive |
+   | `DATABASE_URL` | Pooled Postgres connection string; mark sensitive. The build can also use `STORAGE_PRISMA_DATABASE_URL` or `STORAGE_DATABASE_URL_POOLED`. |
+   | `DIRECT_URL` | Direct/unpooled Postgres connection string for migrations; mark sensitive. The build can also use `STORAGE_DATABASE_URL`, `DATABASE_URL_UNPOOLED`, or `POSTGRES_URL_NON_POOLING`. |
 
 5. Use a separate Postgres database for Vercel Preview deployments, and set its pooled and direct URLs in the Preview environment. Do not let preview builds run schema migrations against production.
 6. After the first production deployment, replace `https://your-production-domain.vercel.app` in `shopify.app.toml` with the stable Vercel production URL (or custom domain). Keep the app URL and OAuth redirect URL pointed at production, never a per-deployment preview URL:
