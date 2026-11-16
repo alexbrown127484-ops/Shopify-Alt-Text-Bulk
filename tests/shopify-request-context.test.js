@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { hasShopifyRequestContext } from "../app/shopify-request-context.server.js";
+import {
+  getShopifyAppEntryPath,
+  hasShopifyRequestContext,
+} from "../app/shopify-request-context.server.js";
 
 test("recognizes Shopify shop query context", () => {
   const request = new Request(
@@ -22,4 +25,21 @@ test("rejects direct browser requests without Shopify context", () => {
   const request = new Request("https://app.example.com/app");
 
   assert.equal(hasShopifyRequestContext(request), false);
+});
+
+test("sends Shopify app entry requests to /app without dropping auth params", () => {
+  const request = new Request(
+    "https://app.example.com/?shop=store.myshopify.com&host=admin&hmac=signature",
+  );
+
+  assert.equal(
+    getShopifyAppEntryPath(request),
+    "/app?shop=store.myshopify.com&host=admin&hmac=signature",
+  );
+});
+
+test("sends direct browser entry requests to login", () => {
+  const request = new Request("https://app.example.com/");
+
+  assert.equal(getShopifyAppEntryPath(request), "/auth/login");
 });
