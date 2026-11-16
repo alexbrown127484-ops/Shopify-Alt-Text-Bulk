@@ -19,7 +19,7 @@ export default function Login() {
 
   return (
     <main style={{ maxWidth: 420, margin: "10vh auto", padding: 24 }}>
-      <Form method="post">
+      <Form method="post" target="_top">
         <h1>Log in to Alt Text Bulk Filler</h1>
         <label htmlFor="shop">Shop domain</label>
         <input
