@@ -57,12 +57,12 @@ Requested access scopes are `read_products` and `write_files`. A merchant accoun
    | `SHOPIFY_API_KEY` | Shopify app client ID |
    | `SHOPIFY_API_SECRET` | Shopify app secret; mark sensitive |
    | `SCOPES` | `read_products,write_files` |
-   | `SHOPIFY_APP_URL` | Stable production HTTPS URL |
+   | `SHOPIFY_APP_URL` | Stable production HTTPS URL (for this project, `https://shopify-alt-text-bulk-fix.vercel.app`; do not leave the scaffold placeholder) |
    | `DATABASE_URL` | Pooled Postgres connection string; mark sensitive. The build can also use `STORAGE_PRISMA_DATABASE_URL` or `STORAGE_DATABASE_URL_POOLED`. |
    | `DIRECT_URL` | Direct/unpooled Postgres connection string for migrations; mark sensitive. The build can also use `STORAGE_DATABASE_URL`, `DATABASE_URL_UNPOOLED`, or `POSTGRES_URL_NON_POOLING`. |
 
 5. Use a separate Postgres database for Vercel Preview deployments, and set its pooled and direct URLs in the Preview environment. Do not let preview builds run schema migrations against production.
-6. After the first production deployment, replace `https://your-production-domain.vercel.app` in `shopify.app.toml` with the stable Vercel production URL (or custom domain). Keep the app URL and OAuth redirect URL pointed at production, never a per-deployment preview URL:
+6. `shopify.app.toml` is configured for `https://shopify-alt-text-bulk-fix.vercel.app`. If your Vercel production domain differs, replace it with the stable production URL (or custom domain). Keep the app URL and OAuth redirect URL pointed at production, never a per-deployment preview URL:
 
    ```toml
    application_url = "https://<production-domain>"
@@ -76,6 +76,10 @@ Requested access scopes are `read_products` and `write_files`. A merchant accoun
    ```
 
    Confirm the OAuth flow and webhook delivery against the deployed URL. Preview deployments do not change the Shopify production app URL.
+
+The server uses Vercel's `VERCEL_PROJECT_PRODUCTION_URL` if `SHOPIFY_APP_URL` is still the scaffold placeholder, and maps the Storage integration's pooled/direct database variable names for Prisma at runtime. Still replace the placeholder in Vercel and `shopify.app.toml`, and set the Shopify API key/secret to the correct app credentials before merchant requests can authenticate.
+
+Opening the public production URL redirects to `/auth/login`. Shopify Admin requests with shop/session context open the embedded `/app`; direct `/app` visits without Shopify context return to the login form.
 
 ## Resumable bulk-update behavior
 

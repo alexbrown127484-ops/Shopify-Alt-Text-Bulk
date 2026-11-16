@@ -1,15 +1,13 @@
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { resolveDatabaseEnvironment } from "./database-env.js";
+import { configureDatabaseEnvironment } from "../app/database-env.server.js";
 
 const projectRoot = fileURLToPath(new URL("../", import.meta.url));
 const prismaCli = fileURLToPath(
   new URL("../node_modules/prisma/build/index.js", import.meta.url),
 );
 
-const { databaseUrl, directUrl } = resolveDatabaseEnvironment(process.env);
-if (databaseUrl) process.env.DATABASE_URL = databaseUrl;
-if (directUrl) process.env.DIRECT_URL = directUrl;
+const { databaseUrl, directUrl } = configureDatabaseEnvironment(process.env);
 
 const missing = [];
 if (!process.env.DATABASE_URL) missing.push("DATABASE_URL (pooled)");

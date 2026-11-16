@@ -1,9 +1,19 @@
 import { AppProvider } from "@shopify/shopify-app-react-router/react";
 import { boundary } from "@shopify/shopify-app-react-router/server";
-import { Outlet, useLoaderData, useRouteError } from "react-router";
+import {
+  Outlet,
+  redirect,
+  useLoaderData,
+  useRouteError,
+} from "react-router";
+import { hasShopifyRequestContext } from "../shopify-request-context.server";
 import { authenticate } from "../shopify.server";
 
 export async function loader({ request }) {
+  if (!hasShopifyRequestContext(request)) {
+    return redirect("/auth/login");
+  }
+
   await authenticate.admin(request);
   return { apiKey: process.env.SHOPIFY_API_KEY || "" };
 }

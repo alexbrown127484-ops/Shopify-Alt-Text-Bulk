@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { resolveDatabaseEnvironment } from "../scripts/database-env.js";
+import {
+  configureDatabaseEnvironment,
+  resolveDatabaseEnvironment,
+} from "../app/database-env.server.js";
 
 test("resolves the Storage integration's pooled and direct database URLs", () => {
   const result = resolveDatabaseEnvironment({
@@ -8,6 +11,18 @@ test("resolves the Storage integration's pooled and direct database URLs", () =>
     STORAGE_DATABASE_URL_POOLED: "postgresql://pooled-alt.example/app",
     STORAGE_DATABASE_URL: "postgresql://direct.example/app",
     STORAGE_POSTGRES_URL: "postgresql://direct-alt.example/app",
+  });
+
+  test("configures Prisma runtime URLs from Storage integration aliases", () => {
+    const environment = {
+      STORAGE_PRISMA_DATABASE_URL: "postgresql://pooled.example/app",
+      STORAGE_DATABASE_URL: "postgresql://direct.example/app",
+    };
+
+    const resolved = configureDatabaseEnvironment(environment);
+
+    assert.equal(environment.DATABASE_URL, resolved.databaseUrl);
+    assert.equal(environment.DIRECT_URL, resolved.directUrl);
   });
 
   assert.deepEqual(result, {

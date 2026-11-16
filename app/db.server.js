@@ -1,4 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import { configureDatabaseEnvironment } from "./database-env.server";
+
+configureDatabaseEnvironment(process.env);
 
 const prisma =
   globalThis.prismaGlobal ??
@@ -11,4 +14,3 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export default prisma;
-

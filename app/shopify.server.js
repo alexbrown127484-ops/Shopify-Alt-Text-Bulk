@@ -6,6 +6,7 @@ import {
   shopifyApp,
 } from "@shopify/shopify-app-react-router/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
+import { getAppUrl } from "./app-url.server";
 import prisma from "./db.server";
 
 const shopify = shopifyApp({
@@ -13,7 +14,7 @@ const shopify = shopifyApp({
   apiSecretKey: process.env.SHOPIFY_API_SECRET || "",
   apiVersion: ApiVersion.October26,
   scopes: process.env.SCOPES?.split(",").map((scope) => scope.trim()),
-  appUrl: process.env.SHOPIFY_APP_URL || "",
+  appUrl: getAppUrl(),
   authPathPrefix: "/auth",
   sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.AppStore,

@@ -26,3 +26,10 @@ export function resolveDatabaseEnvironment(environment) {
 
   return { databaseUrl, directUrl };
 }
+
+export function configureDatabaseEnvironment(environment) {
+  const { databaseUrl, directUrl } = resolveDatabaseEnvironment(environment);
+  if (databaseUrl) environment.DATABASE_URL = databaseUrl;
+  if (directUrl) environment.DIRECT_URL = directUrl;
+  return { databaseUrl, directUrl };
+}
